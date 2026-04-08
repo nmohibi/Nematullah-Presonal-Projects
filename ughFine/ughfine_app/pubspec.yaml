@@ -1,6 +1,6 @@
 name: ughfine_app
-description: "A new Flutter project."
-publish_to: 'none'
+description: "FitAI - AI-Powered Fitness & Gym Application"
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -10,10 +10,23 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Firebase – connects our app to the Firebase backend
+  firebase_core: ^4.4.0 # Must always be first; initializes Firebase
+  firebase_auth: ^6.1.4 # Handles login, register, logout
+  cloud_firestore: ^6.1.2 # Cloud database to save user data & AI plans
+
+  # State Management – lets widgets react to data changes
+  provider: ^6.1.5+1 # ChangeNotifier + Provider (same as instructor demo)
+
+  # AI – calls Google Gemini to generate workout & diet plans
+  google_generative_ai: ^0.4.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^6.0.0 # Catches bad Dart code style
+  mockito: ^5.4.4 # Creates fake objects for unit testing
+  build_runner: ^2.4.13 # Auto-generates mockito mock files
 
 flutter:
   uses-material-design: true
