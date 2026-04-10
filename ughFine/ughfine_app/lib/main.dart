@@ -1,14 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'providers/user_provider.dart';
+import 'providers/workout_provider.dart';
+import 'providers/diet_provider.dart';
 import 'screens/about.dart';
+import 'screens/login.dart';
+
+class Routes {
+  static const about = '/';
+  static const login = '/login';
+  static const questions = '/questions';
+  static const dashboard = '/dashboard';
+  static const workout = '/workout';
+  static const diet = '/diet';
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  runApp(const UghFineApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => WorkoutProvider()),
+        ChangeNotifierProvider(create: (_) => DietProvider()),
+      ],
+      child: const UghFineApp(),
+    ),
+  );
 }
 
 class UghFineApp extends StatelessWidget {
@@ -26,11 +47,10 @@ class UghFineApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+
       routes: {
-        '/': (context) => const AboutScreen(),
-        '/login': (context) =>
-            const Scaffold(body: Center(child: Text('Login'))),
+        Routes.about: (context) => const AboutScreen(),
+        Routes.login: (context) => const LoginScreen(),
       },
     );
   }
