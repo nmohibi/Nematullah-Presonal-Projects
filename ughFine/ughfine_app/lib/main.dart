@@ -8,6 +8,11 @@ import 'providers/diet_provider.dart';
 import 'screens/about.dart';
 import 'screens/login.dart';
 
+import 'screens/dashboard.dart';
+import 'screens/workout.dart';
+import 'screens/diet.dart';
+import 'screens/questions.dart';
+
 class Routes {
   static const about = '/';
   static const login = '/login';
@@ -34,11 +39,10 @@ void main() async {
 
 class UghFineApp extends StatelessWidget {
   const UghFineApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FitAI',
+      title: 'UghFine',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -51,6 +55,26 @@ class UghFineApp extends StatelessWidget {
       routes: {
         Routes.about: (context) => const AboutScreen(),
         Routes.login: (context) => const LoginScreen(),
+      },
+      onGenerateRoute: (settings) {
+        final protected = <String, WidgetBuilder>{
+          Routes.questions: (_) => const QuestionsScreen(),
+          Routes.dashboard: (_) => const DashboardScreen(),
+          Routes.workout: (_) => const WorkoutScreen(),
+          Routes.diet: (_) => const DietScreen(),
+        };
+
+        if (protected.containsKey(settings.name)) {
+          final userProvider = Provider.of<UserProvider>(
+            context,
+            listen: false,
+          );
+          if (!userProvider.isLoggedIn) {
+            return MaterialPageRoute(builder: (_) => const LoginScreen());
+          }
+          return MaterialPageRoute(builder: protected[settings.name]!);
+        }
+        return null;
       },
     );
   }
