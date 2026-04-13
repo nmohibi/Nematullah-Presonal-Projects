@@ -1,35 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
 import '../services/auth_service.dart';
 
 class UserProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
   User? _firebaseUser;
-  UserModel? _userModel;
   bool _isLoading = false;
   String? _errorMessage;
 
   User? get firebaseUser => _firebaseUser;
-  UserModel? get userModel => _userModel;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isLoggedIn => _firebaseUser != null;
-  bool get hasCompletedOnboarding =>
-      _userModel?.hasCompletedOnboarding ?? false;
+  bool get hasCompletedOnboarding => false;
 
   UserProvider() {
     _init();
   }
 
   void _init() {
-    _authService.authStateChanges.listen((User? user) async {
+    _authService.authStateChanges.listen((User? user) {
       _firebaseUser = user;
-      if (user != null) {
-      } else {
-        _userModel = null;
-      }
       notifyListeners();
     });
   }
@@ -67,11 +59,6 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> logout() async {
     await _authService.logout();
-  }
-
-  Future<void> saveUserProfile(UserModel user) async {
-    _userModel = user;
-    notifyListeners();
   }
 
   void _setLoading(bool value) {
