@@ -19,6 +19,11 @@ class _LoginScreenState extends State<LoginScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        context.read<UserProvider>().clearError();
+      }
+    });
   }
 
   @override

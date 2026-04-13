@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ughfine_app/main.dart';
 
 
 
@@ -121,7 +120,7 @@ class _AboutScreenState extends State<AboutScreen>
                       'Your AI-Powered Fitness Coach',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha: 0.7),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -131,7 +130,7 @@ class _AboutScreenState extends State<AboutScreen>
                       'Get a personalized workout & diet plan\nbuilt just for you by AI.',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.white.withValues(alpha: 0.5),
                         height: 1.6,
                       ),
                       textAlign: TextAlign.center,
