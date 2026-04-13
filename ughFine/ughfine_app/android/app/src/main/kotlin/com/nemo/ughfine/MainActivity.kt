@@ -1,4 +1,4 @@
-package com.example.ughfine_app
+package com.nemo.ughfine
 
 import io.flutter.embedding.android.FlutterActivity
 

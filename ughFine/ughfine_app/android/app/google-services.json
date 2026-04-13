@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "517027519724",
+    "project_id": "ughfine-project",
+    "storage_bucket": "ughfine-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:517027519724:android:dfafbfed347855e91799c9",
+        "android_client_info": {
+          "package_name": "com.nemo.ughfine"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-9GLNZ4WGefaEgNogsyQGME8jGTSBlUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

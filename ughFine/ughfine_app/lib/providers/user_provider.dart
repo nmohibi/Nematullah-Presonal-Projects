@@ -1,36 +1,66 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../models/user_model.dart';
 import '../services/auth_service.dart';
+import '../services/firestore_service.dart';
 
 class UserProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
+
+  final FirestoreService _firestoreService = FirestoreService();
 
   User? _firebaseUser;
   bool _isLoading = false;
   String? _errorMessage;
 
+  UserModel? _userModel;
+
   User? get firebaseUser => _firebaseUser;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isLoggedIn => _firebaseUser != null;
-  bool get hasCompletedOnboarding => false;
+
+  UserModel? get userModel => _userModel;
+
+  bool get hasCompletedOnboarding =>
+      _userModel?.hasCompletedOnboarding ?? false;
 
   UserProvider() {
     _init();
   }
 
   void _init() {
-    _authService.authStateChanges.listen((User? user) {
+    _authService.authStateChanges.listen((User? user) async {
       _firebaseUser = user;
+
+      if (user != null) {
+        _userModel = await _firestoreService.getUser(user.uid);
+      } else {
+        _userModel = null;
+      }
+
       notifyListeners();
     });
   }
 
+  Future<void> saveUserProfile(UserModel user) async {
+    _userModel = user;
+    notifyListeners();
+    await _firestoreService.saveUser(user);
+  }
+
+  // Clear any stale error so the UI doesn't show a previous failure message
+  // while the new attempt is in flight
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
+  }
+
   Future<bool> login({required String email, required String password}) async {
+    _errorMessage = null;
     _setLoading(true);
     try {
       await _authService.login(email: email, password: password);
-      _errorMessage = null;
       _setLoading(false);
       return true;
     } on FirebaseAuthException catch (e) {
@@ -44,10 +74,10 @@ class UserProvider extends ChangeNotifier {
     required String email,
     required String password,
   }) async {
+    _errorMessage = null;
     _setLoading(true);
     try {
       await _authService.register(email: email, password: password);
-      _errorMessage = null;
       _setLoading(false);
       return true;
     } on FirebaseAuthException catch (e) {
