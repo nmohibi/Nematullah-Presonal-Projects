@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
 
@@ -11,26 +9,21 @@ class AboutScreen extends StatefulWidget {
 
 class _AboutScreenState extends State<AboutScreen>
     with SingleTickerProviderStateMixin {
- 
   late final AnimationController _controller;
-
 
   late final Animation<double> _fadeAnimation;
 
- 
   late final Animation<double> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
 
-
     _controller = AnimationController(
-      vsync: this, 
+      vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
 
-    
     _fadeAnimation = _controller.drive(
       Tween<double>(
         begin: 0.0,
@@ -50,7 +43,6 @@ class _AboutScreenState extends State<AboutScreen>
 
   @override
   void dispose() {
-   
     _controller.dispose();
     super.dispose();
   }
@@ -59,7 +51,6 @@ class _AboutScreenState extends State<AboutScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-  
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -69,14 +60,12 @@ class _AboutScreenState extends State<AboutScreen>
         ),
         child: SafeArea(
           child: Center(
-          
             child: AnimatedBuilder(
               animation: _controller,
               builder: (context, child) {
                 return Opacity(
                   opacity: _fadeAnimation.value,
                   child: Transform.translate(
-                    
                     offset: Offset(0, _slideAnimation.value),
                     child: child,
                   ),
@@ -87,7 +76,6 @@ class _AboutScreenState extends State<AboutScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                  
                     Container(
                       width: 100,
                       height: 100,
@@ -103,7 +91,6 @@ class _AboutScreenState extends State<AboutScreen>
                     ),
                     const SizedBox(height: 32),
 
-                 
                     const Text(
                       'UghFine',
                       style: TextStyle(
@@ -115,7 +102,6 @@ class _AboutScreenState extends State<AboutScreen>
                     ),
                     const SizedBox(height: 12),
 
-                  
                     Text(
                       'Your AI-Powered Fitness Coach',
                       style: TextStyle(
@@ -137,12 +123,10 @@ class _AboutScreenState extends State<AboutScreen>
                     ),
                     const SizedBox(height: 60),
 
-            
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                  
                           Navigator.of(context).pushNamed('/login');
                         },
                         style: ElevatedButton.styleFrom(
