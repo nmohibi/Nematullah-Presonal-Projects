@@ -65,7 +65,10 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
     await userProvider.saveUserProfile(user);
 
+    // AI + plan generation will be added here
+
     if (!mounted) return;
+
     Navigator.of(context).pushReplacementNamed(Routes.dashboard);
   }
 
@@ -73,28 +76,21 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tell us about yourself'),
+        title: Text('Step ${_step + 1} of 7'),
         leading: _step > 0
             ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: _back)
             : null,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Step ${_step + 1} of 7',
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
-            const SizedBox(height: 24),
-            // Render the current step's content
             Expanded(child: _buildStep()),
             const SizedBox(height: 24),
-            // Next / Finish button
             SizedBox(
               width: double.infinity,
-              child: FilledButton(
+              child: ElevatedButton(
                 onPressed: _next,
                 child: Text(_step < 6 ? 'Next' : 'Finish'),
               ),
@@ -121,18 +117,15 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "What's your name?",
-          style: Theme.of(context).textTheme.headlineSmall,
+        const Text(
+          'What is your name?',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        TextField(
+        TextFormField(
           controller: _nameCtrl,
-          decoration: const InputDecoration(
-            labelText: 'Full name',
-            border: OutlineInputBorder(),
-          ),
-          textCapitalization: TextCapitalization.words,
+          decoration: const InputDecoration(labelText: 'Full name'),
+          autofocus: true,
         ),
       ],
     );
@@ -142,17 +135,14 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'How old are you?',
-          style: Theme.of(context).textTheme.headlineSmall,
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        TextField(
+        TextFormField(
           controller: _ageCtrl,
-          decoration: const InputDecoration(
-            labelText: 'Age',
-            border: OutlineInputBorder(),
-          ),
+          decoration: const InputDecoration(labelText: 'Age'),
           keyboardType: TextInputType.number,
         ),
       ],
@@ -163,63 +153,58 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Body measurements',
-          style: Theme.of(context).textTheme.headlineSmall,
+        const Text(
+          'Your body stats',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        TextField(
+        TextFormField(
           controller: _weightCtrl,
-          decoration: const InputDecoration(
-            labelText: 'Weight (kg)',
-            border: OutlineInputBorder(),
-          ),
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: const InputDecoration(labelText: 'Weight (kg)'),
+          keyboardType: TextInputType.number,
         ),
-        const SizedBox(height: 16),
-        TextField(
+        const SizedBox(height: 12),
+        TextFormField(
           controller: _heightCtrl,
-          decoration: const InputDecoration(
-            labelText: 'Height (cm)',
-            border: OutlineInputBorder(),
-          ),
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: const InputDecoration(labelText: 'Height (cm)'),
+          keyboardType: TextInputType.number,
         ),
       ],
     );
   }
 
   Widget _stepGoal() {
-    const goals = [
-      ('lose_weight', 'Lose Weight'),
-      ('gain_muscle', 'Gain Muscle'),
-      ('general_health', 'General Health'),
-      ('improve_endurance', 'Improve Endurance'),
+    final goals = [
+      ('lose_weight', 'Lose Weight', Icons.trending_down),
+      ('build_muscle', 'Build Muscle', Icons.fitness_center),
+      ('general_health', 'General Health', Icons.favorite),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "What's your main fitness goal?",
-          style: Theme.of(context).textTheme.headlineSmall,
+        const Text(
+          'What is your goal?',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        // Radio buttons — one per goal option
-        ...goals.map(
-          (g) => RadioListTile<String>(
+        ...goals.map((g) {
+          final isSelected = _goal == g.$1;
+          return ListTile(
+            leading: Icon(g.$3),
             title: Text(g.$2),
-            value: g.$1,
-            groupValue: _goal,
-            onChanged: (v) => setState(() => _goal = v!),
-          ),
-        ),
+            tileColor: isSelected
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null,
+            onTap: () => setState(() => _goal = g.$1),
+          );
+        }),
       ],
     );
   }
 
   Widget _stepGymDays() {
-    const days = [
+    final days = [
       'Monday',
       'Tuesday',
       'Wednesday',
@@ -232,24 +217,27 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Which days do you go to the gym?',
-          style: Theme.of(context).textTheme.headlineSmall,
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 8),
-        ...days.map(
-          (day) => CheckboxListTile(
-            title: Text(day),
-            value: _gymDays.contains(day),
-            onChanged: (checked) {
-              setState(() {
-                if (checked == true) {
-                  _gymDays.add(day);
-                } else {
-                  _gymDays.remove(day);
-                }
-              });
-            },
+        const SizedBox(height: 16),
+        Expanded(
+          child: ListView(
+            children: days.map((day) {
+              final isSelected = _gymDays.contains(day);
+              return CheckboxListTile(
+                title: Text(day),
+                value: isSelected,
+                onChanged: (checked) => setState(() {
+                  if (checked == true) {
+                    _gymDays.add(day);
+                  } else {
+                    _gymDays.remove(day);
+                  }
+                }),
+              );
+            }).toList(),
           ),
         ),
       ],
@@ -257,30 +245,32 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   }
 
   Widget _stepDiet() {
-    const diets = [
-      ('none', 'No Preference'),
+    final options = [
+      ('none', 'No preference'),
       ('vegetarian', 'Vegetarian'),
       ('vegan', 'Vegan'),
       ('keto', 'Keto'),
-      ('halal', 'Halal'),
+      ('high_protein', 'High Protein'),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Any dietary preferences?',
-          style: Theme.of(context).textTheme.headlineSmall,
+        const Text(
+          'Any diet preference?',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        ...diets.map(
-          (d) => RadioListTile<String>(
-            title: Text(d.$2),
-            value: d.$1,
-            groupValue: _dietPreference,
-            onChanged: (v) => setState(() => _dietPreference = v!),
-          ),
-        ),
+        ...options.map((o) {
+          final isSelected = _dietPreference == o.$1;
+          return ListTile(
+            title: Text(o.$2),
+            tileColor: isSelected
+                ? Theme.of(context).colorScheme.primaryContainer
+                : null,
+            onTap: () => setState(() => _dietPreference = o.$1),
+          );
+        }),
       ],
     );
   }
@@ -289,18 +279,18 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Any health notes or injuries?',
-          style: Theme.of(context).textTheme.headlineSmall,
+        const Text(
+          'Any injuries or health notes?',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        const Text('This helps us tailor your plan safely.'),
+        const Text('Leave blank if none.', style: TextStyle(fontSize: 14)),
         const SizedBox(height: 16),
-        TextField(
+        TextFormField(
           controller: _healthNotesCtrl,
           decoration: const InputDecoration(
             labelText: 'Health notes (optional)',
-            border: OutlineInputBorder(),
+            alignLabelWithHint: true,
           ),
           maxLines: 4,
         ),
