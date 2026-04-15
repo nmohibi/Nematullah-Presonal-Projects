@@ -3,6 +3,10 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 import '../models/user_model.dart';
 import '../providers/user_provider.dart';
+import '../providers/workout_provider.dart';
+import '../providers/diet_provider.dart';
+import '../services/firestore_service.dart';
+import '../services/ai_service.dart';
 
 class QuestionsScreen extends StatefulWidget {
   const QuestionsScreen({super.key});
@@ -48,6 +52,10 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
   Future<void> _submit() async {
     final userProvider = context.read<UserProvider>();
+    final workoutProvider = context.read<WorkoutProvider>();
+    final dietProvider = context.read<DietProvider>();
+    final firestoreService = FirestoreService();
+    final aiService = AiService();
 
     final user = UserModel(
       uid: userProvider.firebaseUser!.uid,
@@ -63,9 +71,15 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
       hasCompletedOnboarding: true,
     );
 
+    final plans = await aiService.generatePlans(user);
+
     await userProvider.saveUserProfile(user);
 
-    // AI + plan generation will be added here
+    workoutProvider.setWorkoutPlan(plans.workout);
+    dietProvider.setDietPlan(plans.diet);
+
+    await firestoreService.saveWorkoutPlan(plans.workout);
+    await firestoreService.saveDietPlan(plans.diet);
 
     if (!mounted) return;
 
