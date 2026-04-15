@@ -16,19 +16,6 @@ class _DietScreenState extends State<DietScreen>
   TabController? _tabController;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final dietProvider = context.read<DietProvider>();
-      final userProvider = context.read<UserProvider>();
-      final uid = userProvider.firebaseUser?.uid;
-      if (uid != null) {
-        dietProvider.loadDietPlan(uid);
-      }
-    });
-  }
-
-  @override
   void dispose() {
     _tabController?.dispose();
     super.dispose();

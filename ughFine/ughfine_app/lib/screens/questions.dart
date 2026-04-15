@@ -23,7 +23,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   final _weightCtrl = TextEditingController();
   final _heightCtrl = TextEditingController();
   final _healthNotesCtrl = TextEditingController();
-
+  bool _isLoading = false;
   var _goal = 'general_health';
   var _dietPreference = 'none';
   final List<String> _gymDays = [];
@@ -51,39 +51,50 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   }
 
   Future<void> _submit() async {
-    final userProvider = context.read<UserProvider>();
-    final workoutProvider = context.read<WorkoutProvider>();
-    final dietProvider = context.read<DietProvider>();
-    final firestoreService = FirestoreService();
-    final aiService = AiService();
+    setState(() => _isLoading = true);
 
-    final user = UserModel(
-      uid: userProvider.firebaseUser!.uid,
-      email: userProvider.firebaseUser!.email ?? '',
-      name: _nameCtrl.text.trim(),
-      age: int.tryParse(_ageCtrl.text.trim()) ?? 0,
-      weightKg: double.tryParse(_weightCtrl.text.trim()) ?? 0.0,
-      heightCm: double.tryParse(_heightCtrl.text.trim()) ?? 0.0,
-      goal: _goal,
-      gymDays: List.from(_gymDays),
-      dietPreference: _dietPreference,
-      healthNotes: _healthNotesCtrl.text.trim(),
-      hasCompletedOnboarding: true,
-    );
+    try {
+      final userProvider = context.read<UserProvider>();
+      final workoutProvider = context.read<WorkoutProvider>();
+      final dietProvider = context.read<DietProvider>();
+      final firestoreService = FirestoreService();
+      final aiService = AiService();
 
-    final plans = await aiService.generatePlans(user);
+      final user = UserModel(
+        uid: userProvider.firebaseUser!.uid,
+        email: userProvider.firebaseUser!.email ?? '',
+        name: _nameCtrl.text.trim(),
+        age: int.tryParse(_ageCtrl.text.trim()) ?? 0,
+        weightKg: double.tryParse(_weightCtrl.text.trim()) ?? 0.0,
+        heightCm: double.tryParse(_heightCtrl.text.trim()) ?? 0.0,
+        goal: _goal,
+        gymDays: List.from(_gymDays),
+        dietPreference: _dietPreference,
+        healthNotes: _healthNotesCtrl.text.trim(),
+        hasCompletedOnboarding: true,
+      );
 
-    await userProvider.saveUserProfile(user);
+      final plans = await aiService.generatePlans(user);
+      await userProvider.saveUserProfile(user);
+      workoutProvider.setWorkoutPlan(plans.workout);
+      dietProvider.setDietPlan(plans.diet);
+      await firestoreService.saveWorkoutPlan(plans.workout);
+      await firestoreService.saveDietPlan(plans.diet);
 
-    workoutProvider.setWorkoutPlan(plans.workout);
-    dietProvider.setDietPlan(plans.diet);
-
-    await firestoreService.saveWorkoutPlan(plans.workout);
-    await firestoreService.saveDietPlan(plans.diet);
-
-    if (!mounted) return;
-
-    Navigator.of(context).pushReplacementNamed(Routes.dashboard);
+      if (!mounted) return;
+      Navigator.of(context).pushReplacementNamed(Routes.dashboard);
+    } catch (e) {
+      // Show an error message so the user knows what happened
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Something went wrong generating your plan. Please try again.',
+          ),
+        ),
+      );
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -105,8 +116,14 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _next,
-                child: Text(_step < 6 ? 'Next' : 'Finish'),
+                onPressed: _isLoading ? null : _next,
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(_step < 6 ? 'Next' : 'Finish'),
               ),
             ),
           ],

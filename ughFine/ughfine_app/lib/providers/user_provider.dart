@@ -6,14 +6,12 @@ import '../services/firestore_service.dart';
 
 class UserProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
-
   final FirestoreService _firestoreService = FirestoreService();
 
   User? _firebaseUser;
+  UserModel? _userModel;
   bool _isLoading = false;
   String? _errorMessage;
-
-  UserModel? _userModel;
 
   User? get firebaseUser => _firebaseUser;
   bool get isLoading => _isLoading;
