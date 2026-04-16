@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import '../config/secrets.dart';
 import '../models/user_model.dart';
 import '../models/workout_models.dart';
 import '../models/diet_model.dart';
 
 class AiService {
-  static const _apiKey = 'AIzaSyAGFSB6IAVaoI9B7hmVQUQKKFAvOnugreg';
-
-  final _model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: _apiKey);
+  // API key is pulled from Secrets
+  // Using full model path with models/ prefix for proper API compatibility
+  final _model = GenerativeModel(
+    model: 'models/gemini-2.5-pro',
+    apiKey: Secrets.geminiApiKey,
+  );
 
   Future<({WorkoutPlan workout, DietPlan diet})> generatePlans(
     UserModel user,
