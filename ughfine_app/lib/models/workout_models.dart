@@ -1,3 +1,5 @@
+// Safe dynamic-to-int parsing (_toInt): https://dart.dev/guides/language/type-system#type-inference
+// Firestore data model pattern: https://firebase.flutter.dev/docs/firestore/usage
 class Exercise {
   final String name;
   final int sets;
@@ -16,11 +18,19 @@ class Exercise {
   factory Exercise.fromMap(Map<String, dynamic> data) {
     return Exercise(
       name: data['name'] ?? '',
-      sets: (data['sets'] ?? 0) as int,
-      reps: (data['reps'] ?? 0) as int,
-      restTime: data['restTime'] ?? '',
-      instructions: data['instructions'] ?? '',
+      sets: _toInt(data['sets']),
+      reps: _toInt(data['reps']),
+      restTime: data['restTime']?.toString() ?? '',
+      instructions: data['instructions']?.toString() ?? '',
     );
+  }
+
+  static int _toInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
   }
 
   Map<String, dynamic> toMap() => {
@@ -69,7 +79,6 @@ class WorkoutPlan {
 
   const WorkoutPlan({required this.userId, required this.days});
 
-  // factory constructor to convert from Firestore to WorkoutPlan
   factory WorkoutPlan.fromFirestore(Map<String, dynamic> data) {
     return WorkoutPlan(
       userId: data['userId'] ?? '',
