@@ -38,7 +38,15 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     super.dispose();
   }
 
+  String? _stepError;
+
   void _next() {
+    final error = _validateStep(_step);
+    if (error != null) {
+      setState(() => _stepError = error);
+      return;
+    }
+    setState(() => _stepError = null);
     if (_step < 6) {
       setState(() => _step++);
     } else {
@@ -46,8 +54,40 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     }
   }
 
+  String? _validateStep(int step) {
+    switch (step) {
+      case 0:
+        if (_nameCtrl.text.trim().isEmpty) return 'Please enter your name.';
+        return null;
+      case 1:
+        final age = int.tryParse(_ageCtrl.text.trim());
+        if (_ageCtrl.text.trim().isEmpty) return 'Please enter your age.';
+        if (age == null || age < 10 || age > 100) return 'Please enter a valid age (10–100).';
+        return null;
+      case 2:
+        final weight = double.tryParse(_weightCtrl.text.trim());
+        final height = double.tryParse(_heightCtrl.text.trim());
+        if (_weightCtrl.text.trim().isEmpty) return 'Please enter your weight.';
+        if (weight == null || weight <= 0) return 'Please enter a valid weight.';
+        if (_heightCtrl.text.trim().isEmpty) return 'Please enter your height.';
+        if (height == null || height <= 0) return 'Please enter a valid height.';
+        return null;
+      case 3:
+        return null;
+      case 4:
+        if (_gymDays.isEmpty) return 'Please select at least one gym day.';
+        return null;
+      case 5:
+        return null;
+      case 6:
+        return null;
+      default:
+        return null;
+    }
+  }
+
   void _back() {
-    if (_step > 0) setState(() => _step--);
+    if (_step > 0) setState(() { _step--; _stepError = null; });
   }
 
   Future<void> _submit() async {
@@ -84,7 +124,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
       if (!mounted) return;
       Navigator.of(context).pushReplacementNamed(Routes.dashboard);
     } catch (e) {
-      // Show an error message so the user knows what happened
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -99,20 +138,69 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const totalSteps = 7;
+    final progress = (_step + 1) / totalSteps;
+
     return Scaffold(
+      backgroundColor: const Color(0xFF0A0A0A),
       appBar: AppBar(
-        title: Text('Step ${_step + 1} of 7'),
         leading: _step > 0
-            ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: _back)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+                onPressed: _back,
+              )
             : null,
+        title: Text(
+          'Step ${_step + 1} of $totalSteps',
+          style: const TextStyle(
+            fontSize: 15,
+            color: Color(0xFF888888),
+          ),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 4,
+                backgroundColor: const Color(0xFF1A1A1A),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color(0xFFFF6B00),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
             Expanded(child: _buildStep()),
-            const SizedBox(height: 24),
+
+            if (_stepError != null) ...[
+              const SizedBox(height: 14),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2A1010),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFF5A2020)),
+                ),
+                child: Text(
+                  _stepError!,
+                  style: const TextStyle(
+                    color: Color(0xFFFF6B6B),
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ],
+
+            const SizedBox(height: 16),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -121,9 +209,12 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
-                    : Text(_step < 6 ? 'Next' : 'Finish'),
+                    : Text(_step < 6 ? 'Next' : 'Generate My Plan'),
               ),
             ),
           ],
@@ -144,19 +235,33 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     };
   }
 
+  Widget _stepQuestion(String question) {
+    return Text(
+      question,
+      style: const TextStyle(
+        fontSize: 26,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        height: 1.2,
+      ),
+    );
+  }
+
   Widget _stepName() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'What is your name?',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
+        _stepQuestion('What is\nyour name?'),
+        const SizedBox(height: 32),
         TextFormField(
           controller: _nameCtrl,
-          decoration: const InputDecoration(labelText: 'Full name'),
+          style: const TextStyle(color: Colors.white, fontSize: 16),
+          decoration: const InputDecoration(
+            labelText: 'Full name',
+            prefixIcon: Icon(Icons.person_outline, color: Color(0xFF555555), size: 20),
+          ),
           autofocus: true,
+          onChanged: (_) => setState(() => _stepError = null),
         ),
       ],
     );
@@ -166,15 +271,17 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'How old are you?',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
+        _stepQuestion('How old\nare you?'),
+        const SizedBox(height: 32),
         TextFormField(
           controller: _ageCtrl,
-          decoration: const InputDecoration(labelText: 'Age'),
+          style: const TextStyle(color: Colors.white, fontSize: 16),
+          decoration: const InputDecoration(
+            labelText: 'Age',
+            prefixIcon: Icon(Icons.cake_outlined, color: Color(0xFF555555), size: 20),
+          ),
           keyboardType: TextInputType.number,
+          onChanged: (_) => setState(() => _stepError = null),
         ),
       ],
     );
@@ -184,21 +291,28 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Your body stats',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        _stepQuestion('Your\nbody stats'),
+        const SizedBox(height: 32),
+        TextFormField(
+          controller: _weightCtrl,
+          style: const TextStyle(color: Colors.white, fontSize: 16),
+          decoration: const InputDecoration(
+            labelText: 'Weight (kg)',
+            prefixIcon: Icon(Icons.monitor_weight_outlined, color: Color(0xFF555555), size: 20),
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: (_) => setState(() => _stepError = null),
         ),
         const SizedBox(height: 16),
         TextFormField(
-          controller: _weightCtrl,
-          decoration: const InputDecoration(labelText: 'Weight (kg)'),
-          keyboardType: TextInputType.number,
-        ),
-        const SizedBox(height: 12),
-        TextFormField(
           controller: _heightCtrl,
-          decoration: const InputDecoration(labelText: 'Height (cm)'),
+          style: const TextStyle(color: Colors.white, fontSize: 16),
+          decoration: const InputDecoration(
+            labelText: 'Height (cm)',
+            prefixIcon: Icon(Icons.height_rounded, color: Color(0xFF555555), size: 20),
+          ),
           keyboardType: TextInputType.number,
+          onChanged: (_) => setState(() => _stepError = null),
         ),
       ],
     );
@@ -206,28 +320,64 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
   Widget _stepGoal() {
     final goals = [
-      ('lose_weight', 'Lose Weight', Icons.trending_down),
-      ('build_muscle', 'Build Muscle', Icons.fitness_center),
-      ('general_health', 'General Health', Icons.favorite),
+      ('lose_weight', 'Lose Weight', Icons.trending_down_rounded),
+      ('build_muscle', 'Build Muscle', Icons.fitness_center_rounded),
+      ('general_health', 'General Health', Icons.favorite_rounded),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'What is your goal?',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
+        _stepQuestion('What is\nyour goal?'),
+        const SizedBox(height: 28),
         ...goals.map((g) {
           final isSelected = _goal == g.$1;
-          return ListTile(
-            leading: Icon(g.$3),
-            title: Text(g.$2),
-            tileColor: isSelected
-                ? Theme.of(context).colorScheme.primaryContainer
-                : null,
+          return GestureDetector(
             onTap: () => setState(() => _goal = g.$1),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? const Color(0xFF1A0D00)
+                    : const Color(0xFF141414),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: isSelected
+                      ? const Color(0xFFFF6B00)
+                      : const Color(0xFF2A2A2A),
+                  width: isSelected ? 2 : 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    g.$3,
+                    color: isSelected
+                        ? const Color(0xFFFF6B00)
+                        : const Color(0xFF555555),
+                    size: 22,
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    g.$2,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: isSelected ? Colors.white : const Color(0xFF888888),
+                    ),
+                  ),
+                  const Spacer(),
+                  if (isSelected)
+                    const Icon(
+                      Icons.check_circle_rounded,
+                      color: Color(0xFFFF6B00),
+                      size: 20,
+                    ),
+                ],
+              ),
+            ),
           );
         }),
       ],
@@ -236,37 +386,87 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
   Widget _stepGymDays() {
     final days = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+      'Friday', 'Saturday', 'Sunday',
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Which days do you go to the gym?',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
+        _stepQuestion('Gym\ndays?'),
+        const SizedBox(height: 28),
         Expanded(
           child: ListView(
             children: days.map((day) {
               final isSelected = _gymDays.contains(day);
-              return CheckboxListTile(
-                title: Text(day),
-                value: isSelected,
-                onChanged: (checked) => setState(() {
-                  if (checked == true) {
-                    _gymDays.add(day);
-                  } else {
+              return GestureDetector(
+                onTap: () => setState(() {
+                  _stepError = null;
+                  if (isSelected) {
                     _gymDays.remove(day);
+                  } else {
+                    _gymDays.add(day);
                   }
                 }),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xFF1A0D00)
+                        : const Color(0xFF141414),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected
+                          ? const Color(0xFFFF6B00)
+                          : const Color(0xFF2A2A2A),
+                      width: isSelected ? 2 : 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        day,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected
+                              ? Colors.white
+                              : const Color(0xFF888888),
+                        ),
+                      ),
+                      const Spacer(),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected
+                              ? const Color(0xFFFF6B00)
+                              : Colors.transparent,
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color(0xFFFF6B00)
+                                : const Color(0xFF444444),
+                            width: 2,
+                          ),
+                        ),
+                        child: isSelected
+                            ? const Icon(
+                                Icons.check_rounded,
+                                size: 14,
+                                color: Colors.white,
+                              )
+                            : null,
+                      ),
+                    ],
+                  ),
+                ),
               );
             }).toList(),
           ),
@@ -277,29 +477,66 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
   Widget _stepDiet() {
     final options = [
-      ('none', 'No preference'),
-      ('vegetarian', 'Vegetarian'),
-      ('vegan', 'Vegan'),
-      ('keto', 'Keto'),
-      ('high_protein', 'High Protein'),
+      ('none', 'No preference', Icons.restaurant_rounded),
+      ('vegetarian', 'Vegetarian', Icons.eco_rounded),
+      ('vegan', 'Vegan', Icons.spa_rounded),
+      ('keto', 'Keto', Icons.local_fire_department_rounded),
+      ('high_protein', 'High Protein', Icons.fitness_center_rounded),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Any diet preference?',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
+        _stepQuestion('Diet\npreference?'),
+        const SizedBox(height: 28),
         ...options.map((o) {
           final isSelected = _dietPreference == o.$1;
-          return ListTile(
-            title: Text(o.$2),
-            tileColor: isSelected
-                ? Theme.of(context).colorScheme.primaryContainer
-                : null,
+          return GestureDetector(
             onTap: () => setState(() => _dietPreference = o.$1),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? const Color(0xFF1A0D00)
+                    : const Color(0xFF141414),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isSelected
+                      ? const Color(0xFFFF6B00)
+                      : const Color(0xFF2A2A2A),
+                  width: isSelected ? 2 : 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    o.$3,
+                    color: isSelected
+                        ? const Color(0xFFFF6B00)
+                        : const Color(0xFF555555),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 14),
+                  Text(
+                    o.$2,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? Colors.white : const Color(0xFF888888),
+                    ),
+                  ),
+                  const Spacer(),
+                  if (isSelected)
+                    const Icon(
+                      Icons.check_circle_rounded,
+                      color: Color(0xFFFF6B00),
+                      size: 20,
+                    ),
+                ],
+              ),
+            ),
           );
         }),
       ],
@@ -310,15 +547,16 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Any injuries or health notes?',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
+        _stepQuestion('Any injuries\nor health notes?'),
         const SizedBox(height: 8),
-        const Text('Leave blank if none.', style: TextStyle(fontSize: 14)),
-        const SizedBox(height: 16),
+        const Text(
+          'Leave blank if none — we got you either way.',
+          style: TextStyle(fontSize: 14, color: Color(0xFF666666)),
+        ),
+        const SizedBox(height: 28),
         TextFormField(
           controller: _healthNotesCtrl,
+          style: const TextStyle(color: Colors.white, fontSize: 15),
           decoration: const InputDecoration(
             labelText: 'Health notes (optional)',
             alignLabelWithHint: true,
