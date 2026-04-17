@@ -1,3 +1,4 @@
+// Immutable list update pattern: https://dart.dev/guides/language/effective-dart/design#prefer-making-fields-and-top-level-variables-final
 import 'package:flutter/material.dart';
 import '../models/diet_model.dart';
 import '../services/firestore_service.dart';
@@ -61,7 +62,6 @@ class DietProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    // Saves the updated plan to Firestore in the background
     await _firestoreService.updateMealCompletion(
       uid: uid,
       dayIndex: _selectedDayIndex,

@@ -1,3 +1,5 @@
+// ChangeNotifier pattern: https://docs.flutter.dev/data-and-backend/state-mgmt/simple
+// FirebaseAuthException error codes: https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuthException-class.html
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
@@ -47,10 +49,14 @@ class UserProvider extends ChangeNotifier {
     await _firestoreService.saveUser(user);
   }
 
-  // Clear any stale error so the UI doesn't show a previous failure message
-  // while the new attempt is in flight
   void clearError() {
     _errorMessage = null;
+    notifyListeners();
+  }
+
+  void setError(String message) {
+    _errorMessage = message;
+    _isLoading = false;
     notifyListeners();
   }
 
@@ -63,6 +69,10 @@ class UserProvider extends ChangeNotifier {
       return true;
     } on FirebaseAuthException catch (e) {
       _errorMessage = _friendlyError(e.code);
+      _setLoading(false);
+      return false;
+    } catch (_) {
+      _errorMessage = 'Something went wrong. Please try again.';
       _setLoading(false);
       return false;
     }
@@ -82,6 +92,10 @@ class UserProvider extends ChangeNotifier {
       _errorMessage = _friendlyError(e.code);
       _setLoading(false);
       return false;
+    } catch (_) {
+      _errorMessage = 'Something went wrong. Please try again.';
+      _setLoading(false);
+      return false;
     }
   }
 
@@ -98,9 +112,13 @@ class UserProvider extends ChangeNotifier {
     return switch (code) {
       'user-not-found' => 'No account found with that email.',
       'wrong-password' => 'Incorrect password. Please try again.',
+      'invalid-credential' => 'Incorrect email or password. Please try again.',
       'email-already-in-use' => 'An account with that email already exists.',
       'weak-password' => 'Password must be at least 6 characters.',
       'invalid-email' => 'Please enter a valid email address.',
+      'network-request-failed' => 'No internet connection. Please try again.',
+      'too-many-requests' => 'Too many attempts. Please wait a moment and try again.',
+      'user-disabled' => 'This account has been disabled.',
       _ => 'Something went wrong. Please try again.',
     };
   }
