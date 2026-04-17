@@ -1,3 +1,5 @@
+// google_generative_ai usage: https://pub.dev/packages/google_generative_ai
+// Gemini model names: https://ai.google.dev/gemini-api/docs/models
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import '../config/secrets.dart';
@@ -6,8 +8,6 @@ import '../models/workout_models.dart';
 import '../models/diet_model.dart';
 
 class AiService {
-  // API key is pulled from Secrets
-  // Using full model path with models/ prefix for proper API compatibility
   final _model = GenerativeModel(
     model: 'models/gemini-2.5-pro',
     apiKey: Secrets.geminiApiKey,
