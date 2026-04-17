@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ughfine_app/models/user_model.dart';
 
+//comment for commit
 void main() {
   group('UserModel Tests', () {
     late UserModel user;
@@ -71,10 +72,7 @@ void main() {
     });
 
     test('UserModel should handle missing firestore fields with defaults', () {
-      final data = {
-        'email': 'nemo@example.com',
-        'name': 'NEMO',
-      };
+      final data = {'email': 'nemo@example.com', 'name': 'NEMO'};
 
       final created = UserModel.fromFirestore(data, 'user123');
 
@@ -88,10 +86,7 @@ void main() {
     });
 
     test('UserModel copyWith should update only specified fields', () {
-      final updated = user.copyWith(
-        age: 26,
-        weightKg: 78.0,
-      );
+      final updated = user.copyWith(age: 26, weightKg: 78.0);
 
       expect(updated.age, 26);
       expect(updated.weightKg, 78.0);
@@ -104,37 +99,45 @@ void main() {
       expect(updated.hasCompletedOnboarding, user.hasCompletedOnboarding);
     });
 
-    test('UserModel copyWith should preserve all fields when called without args',
-        () {
-      final copy = user.copyWith();
+    test(
+      'UserModel copyWith should preserve all fields when called without args',
+      () {
+        final copy = user.copyWith();
 
-      expect(copy.uid, user.uid);
-      expect(copy.email, user.email);
-      expect(copy.name, user.name);
-      expect(copy.age, user.age);
-      expect(copy.weightKg, user.weightKg);
-      expect(copy.heightCm, user.heightCm);
-      expect(copy.goal, user.goal);
-      expect(copy.gymDays, user.gymDays);
-      expect(copy.dietPreference, user.dietPreference);
-      expect(copy.hasCompletedOnboarding, user.hasCompletedOnboarding);
-    });
+        expect(copy.uid, user.uid);
+        expect(copy.email, user.email);
+        expect(copy.name, user.name);
+        expect(copy.age, user.age);
+        expect(copy.weightKg, user.weightKg);
+        expect(copy.heightCm, user.heightCm);
+        expect(copy.goal, user.goal);
+        expect(copy.gymDays, user.gymDays);
+        expect(copy.dietPreference, user.dietPreference);
+        expect(copy.hasCompletedOnboarding, user.hasCompletedOnboarding);
+      },
+    );
 
-    test('UserModel round-trip: toMap -> fromFirestore should be identical', () {
-      final map = user.toMap();
+    test(
+      'UserModel round-trip: toMap -> fromFirestore should be identical',
+      () {
+        final map = user.toMap();
 
-      final reconstructed = UserModel.fromFirestore(map, user.uid);
+        final reconstructed = UserModel.fromFirestore(map, user.uid);
 
-      expect(reconstructed.email, user.email);
-      expect(reconstructed.name, user.name);
-      expect(reconstructed.age, user.age);
-      expect(reconstructed.weightKg, user.weightKg);
-      expect(reconstructed.heightCm, user.heightCm);
-      expect(reconstructed.goal, user.goal);
-      expect(reconstructed.gymDays, user.gymDays);
-      expect(reconstructed.dietPreference, user.dietPreference);
-      expect(reconstructed.healthNotes, user.healthNotes);
-      expect(reconstructed.hasCompletedOnboarding, user.hasCompletedOnboarding);
-    });
+        expect(reconstructed.email, user.email);
+        expect(reconstructed.name, user.name);
+        expect(reconstructed.age, user.age);
+        expect(reconstructed.weightKg, user.weightKg);
+        expect(reconstructed.heightCm, user.heightCm);
+        expect(reconstructed.goal, user.goal);
+        expect(reconstructed.gymDays, user.gymDays);
+        expect(reconstructed.dietPreference, user.dietPreference);
+        expect(reconstructed.healthNotes, user.healthNotes);
+        expect(
+          reconstructed.hasCompletedOnboarding,
+          user.hasCompletedOnboarding,
+        );
+      },
+    );
   });
 }

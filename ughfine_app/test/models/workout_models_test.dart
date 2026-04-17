@@ -52,9 +52,7 @@ void main() {
     });
 
     test('Exercise should handle missing fields with defaults', () {
-      final data = {
-        'name': 'Deadlift',
-      };
+      final data = {'name': 'Deadlift'};
 
       final created = Exercise.fromMap(data);
 
@@ -109,11 +107,7 @@ void main() {
     });
 
     test('WorkoutDay should create rest day with empty exercises', () {
-      final restDay = WorkoutDay(
-        day: 'Sunday',
-        isRestDay: true,
-        exercises: [],
-      );
+      final restDay = WorkoutDay(day: 'Sunday', isRestDay: true, exercises: []);
 
       expect(restDay.day, 'Sunday');
       expect(restDay.isRestDay, true);
@@ -131,7 +125,7 @@ void main() {
             'reps': 12,
             'restTime': '60 seconds',
             'instructions': 'Full range of motion.',
-          }
+          },
         ],
       };
 
@@ -144,11 +138,7 @@ void main() {
     });
 
     test('WorkoutDay should handle rest day with no exercises', () {
-      final data = {
-        'day': 'Wednesday',
-        'isRestDay': true,
-        'exercises': [],
-      };
+      final data = {'day': 'Wednesday', 'isRestDay': true, 'exercises': []};
 
       final created = WorkoutDay.fromMap(data);
 
@@ -178,11 +168,7 @@ void main() {
               ),
             ],
           ),
-          WorkoutDay(
-            day: 'Sunday',
-            isRestDay: true,
-            exercises: [],
-          ),
+          WorkoutDay(day: 'Sunday', isRestDay: true, exercises: []),
         ],
       );
     });
@@ -216,7 +202,7 @@ void main() {
                 'reps': 5,
                 'restTime': '3 minutes',
                 'instructions': 'Keep back straight.',
-              }
+              },
             ],
           },
         ],
@@ -230,17 +216,22 @@ void main() {
       expect(created.days[0].exercises[0].name, 'Deadlift');
     });
 
-    test('WorkoutPlan round-trip: toMap -> fromFirestore should be identical',
-        () {
-      final map = workoutPlan.toMap();
+    test(
+      'WorkoutPlan round-trip: toMap -> fromFirestore should be identical',
+      () {
+        final map = workoutPlan.toMap();
 
-      final reconstructed = WorkoutPlan.fromFirestore(map);
+        final reconstructed = WorkoutPlan.fromFirestore(map);
 
-      expect(reconstructed.userId, workoutPlan.userId);
-      expect(reconstructed.days.length, workoutPlan.days.length);
-      expect(reconstructed.days[0].day, workoutPlan.days[0].day);
-      expect(reconstructed.days[0].exercises.length,
-          workoutPlan.days[0].exercises.length);
-    });
+        expect(reconstructed.userId, workoutPlan.userId);
+        expect(reconstructed.days.length, workoutPlan.days.length);
+        expect(reconstructed.days[0].day, workoutPlan.days[0].day);
+        expect(
+          reconstructed.days[0].exercises.length,
+          workoutPlan.days[0].exercises.length,
+        );
+      },
+    );
   });
 }
+//comment

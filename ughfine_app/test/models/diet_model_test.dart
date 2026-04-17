@@ -1,3 +1,4 @@
+//comment for commit
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ughfine_app/models/diet_model.dart';
 
@@ -47,9 +48,7 @@ void main() {
     });
 
     test('Meal should handle missing fields with defaults', () {
-      final data = {
-        'type': 'Dinner',
-      };
+      final data = {'type': 'Dinner'};
 
       final created = Meal.fromMap(data);
 
@@ -120,11 +119,7 @@ void main() {
     });
 
     test('DietDay should create rest day with empty meals', () {
-      final restDay = DietDay(
-        day: 'Sunday',
-        isRestDay: true,
-        meals: [],
-      );
+      final restDay = DietDay(day: 'Sunday', isRestDay: true, meals: []);
 
       expect(restDay.day, 'Sunday');
       expect(restDay.isRestDay, true);
@@ -141,7 +136,7 @@ void main() {
             'time': '7:00 AM',
             'description': 'Eggs and toast',
             'isCompleted': false,
-          }
+          },
         ],
       };
 
@@ -154,11 +149,7 @@ void main() {
     });
 
     test('DietDay should handle rest day with no meals', () {
-      final data = {
-        'day': 'Saturday',
-        'isRestDay': true,
-        'meals': [],
-      };
+      final data = {'day': 'Saturday', 'isRestDay': true, 'meals': []};
 
       final created = DietDay.fromMap(data);
 
@@ -187,11 +178,7 @@ void main() {
               ),
             ],
           ),
-          DietDay(
-            day: 'Sunday',
-            isRestDay: true,
-            meals: [],
-          ),
+          DietDay(day: 'Sunday', isRestDay: true, meals: []),
         ],
       );
     });
@@ -224,7 +211,7 @@ void main() {
                 'time': '6:00 PM',
                 'description': 'Salmon with vegetables',
                 'isCompleted': false,
-              }
+              },
             ],
           },
         ],
