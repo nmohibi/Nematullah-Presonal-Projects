@@ -9,12 +9,9 @@ class MockFirestoreService extends Mock implements FirestoreService {}
 void main() {
   group('WorkoutProvider Tests', () {
     late WorkoutProvider provider;
-    late MockFirestoreService mockFirestoreService;
     late WorkoutPlan testPlan;
 
     setUp(() {
-      mockFirestoreService = MockFirestoreService();
-
       testPlan = WorkoutPlan(
         userId: 'user123',
         days: [
@@ -31,11 +28,7 @@ void main() {
               ),
             ],
           ),
-          WorkoutDay(
-            day: 'Sunday',
-            isRestDay: true,
-            exercises: [],
-          ),
+          WorkoutDay(day: 'Sunday', isRestDay: true, exercises: []),
         ],
       );
 
@@ -92,15 +85,17 @@ void main() {
       expect(selectedDay, isNull);
     });
 
-    test('WorkoutProvider selectedDay should return null if index is out of bounds',
-        () {
-      provider.setWorkoutPlan(testPlan);
+    test(
+      'WorkoutProvider selectedDay should return null if index is out of bounds',
+      () {
+        provider.setWorkoutPlan(testPlan);
 
-      provider.selectDay(100);
-      final selectedDay = provider.selectedDay;
+        provider.selectDay(100);
+        final selectedDay = provider.selectedDay;
 
-      expect(selectedDay, isNull);
-    });
+        expect(selectedDay, isNull);
+      },
+    );
 
     test('WorkoutProvider should notify listeners when plan is set', () {
       int notifyCount = 0;
@@ -114,15 +109,17 @@ void main() {
       expect(notifyCount, 2);
     });
 
-    test('WorkoutProvider should reset selectedDayIndex when setting new plan',
-        () {
-      provider.setWorkoutPlan(testPlan);
-      provider.selectDay(1);
-      expect(provider.selectedDayIndex, 1);
+    test(
+      'WorkoutProvider should reset selectedDayIndex when setting new plan',
+      () {
+        provider.setWorkoutPlan(testPlan);
+        provider.selectDay(1);
+        expect(provider.selectedDayIndex, 1);
 
-      provider.setWorkoutPlan(testPlan);
+        provider.setWorkoutPlan(testPlan);
 
-      expect(provider.selectedDayIndex, 0);
-    });
+        expect(provider.selectedDayIndex, 0);
+      },
+    );
   });
 }
