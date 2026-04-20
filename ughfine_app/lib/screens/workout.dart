@@ -40,7 +40,9 @@ class _WorkoutScreenState extends State<WorkoutScreen>
     if (plan == null) {
       return const Scaffold(
         backgroundColor: Color(0xFF0A0A0A),
-        body: Center(child: CircularProgressIndicator(color: Color(0xFFFF6B00))),
+        body: Center(
+          child: CircularProgressIndicator(color: Color(0xFFFF6B00)),
+        ),
       );
     }
 
@@ -59,8 +61,11 @@ class _WorkoutScreenState extends State<WorkoutScreen>
             pinned: true,
             backgroundColor: const Color(0xFF0A0A0A),
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                  size: 18, color: Colors.white),
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 18,
+                color: Colors.white,
+              ),
               onPressed: () => Navigator.of(context).pop(),
             ),
             flexibleSpace: FlexibleSpaceBar(
@@ -71,7 +76,7 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                   Image.asset(
                     'assets/images/athlete3.jpg',
                     fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
+                    alignment: Alignment.center,
                   ),
                   Container(
                     decoration: const BoxDecoration(
@@ -107,10 +112,7 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                         SizedBox(height: 4),
                         Text(
                           'Your training schedule',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.white60,
-                          ),
+                          style: TextStyle(fontSize: 13, color: Colors.white60),
                         ),
                       ],
                     ),
@@ -127,8 +129,10 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                   isScrollable: true,
                   tabAlignment: TabAlignment.start,
                   indicator: const UnderlineTabIndicator(
-                    borderSide:
-                        BorderSide(color: Color(0xFFFF6B00), width: 2.5),
+                    borderSide: BorderSide(
+                      color: Color(0xFFFF6B00),
+                      width: 2.5,
+                    ),
                     insets: EdgeInsets.symmetric(horizontal: 8),
                   ),
                   labelColor: Colors.white,
@@ -138,8 +142,9 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                     fontSize: 13,
                   ),
                   tabs: plan.days
-                      .map((d) =>
-                          Tab(text: d.day.substring(0, 3).toUpperCase()))
+                      .map(
+                        (d) => Tab(text: d.day.substring(0, 3).toUpperCase()),
+                      )
                       .toList(),
                 ),
               ),
@@ -149,18 +154,18 @@ class _WorkoutScreenState extends State<WorkoutScreen>
         body: selectedDay == null
             ? const Center(child: Text('No day selected'))
             : selectedDay.isRestDay
-                ? _RestDayView(
-                    message: 'Recovery is part of the process.',
-                    imagePath: 'assets/images/athlete2.jpg',
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-                    itemCount: selectedDay.exercises.length,
-                    itemBuilder: (context, index) {
-                      final exercise = selectedDay.exercises[index];
-                      return _ExerciseCard(exercise: exercise, index: index);
-                    },
-                  ),
+            ? _RestDayView(
+                message: 'Recovery is part of the process.',
+                imagePath: 'assets/images/athlete2.jpg',
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+                itemCount: selectedDay.exercises.length,
+                itemBuilder: (context, index) {
+                  final exercise = selectedDay.exercises[index];
+                  return _ExerciseCard(exercise: exercise, index: index);
+                },
+              ),
       ),
     );
   }
@@ -260,9 +265,15 @@ class _ExerciseCard extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                _StatChip(icon: Icons.repeat_rounded, label: '${exercise.sets} sets'),
+                _StatChip(
+                  icon: Icons.repeat_rounded,
+                  label: '${exercise.sets} sets',
+                ),
                 const SizedBox(width: 8),
-                _StatChip(icon: Icons.numbers_rounded, label: '${exercise.reps} reps'),
+                _StatChip(
+                  icon: Icons.numbers_rounded,
+                  label: '${exercise.reps} reps',
+                ),
                 const SizedBox(width: 8),
                 _StatChip(icon: Icons.timer_outlined, label: exercise.restTime),
               ],
@@ -347,14 +358,17 @@ class _ExerciseCard extends StatelessWidget {
                     runSpacing: 6,
                     children: [
                       _StatChip(
-                          icon: Icons.repeat_rounded,
-                          label: '${exercise.sets} sets'),
+                        icon: Icons.repeat_rounded,
+                        label: '${exercise.sets} sets',
+                      ),
                       _StatChip(
-                          icon: Icons.numbers_rounded,
-                          label: '${exercise.reps} reps'),
+                        icon: Icons.numbers_rounded,
+                        label: '${exercise.reps} reps',
+                      ),
                       _StatChip(
-                          icon: Icons.timer_outlined,
-                          label: exercise.restTime),
+                        icon: Icons.timer_outlined,
+                        label: exercise.restTime,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -406,10 +420,7 @@ class _StatChip extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFFAAAAAA),
-            ),
+            style: const TextStyle(fontSize: 12, color: Color(0xFFAAAAAA)),
           ),
         ],
       ),

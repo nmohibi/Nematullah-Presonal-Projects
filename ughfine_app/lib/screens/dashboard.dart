@@ -103,7 +103,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFFFF6B00),
                             borderRadius: BorderRadius.circular(6),
@@ -125,20 +127,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                             shadows: [
-                              Shadow(
-                                color: Colors.black54,
-                                blurRadius: 8,
-                              ),
+                              Shadow(color: Colors.black54, blurRadius: 8),
                             ],
                           ),
                         ),
                         const SizedBox(height: 4),
                         const Text(
                           "Let's crush today's goals.",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white60,
-                          ),
+                          style: TextStyle(fontSize: 14, color: Colors.white60),
                         ),
                       ],
                     ),
@@ -165,7 +161,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                   _PlanCard(
                     imagePath: 'assets/images/athlete3.jpg',
-                    imageAlignment: Alignment.topCenter,
+                    imageAlignment: Alignment.center,
                     label: 'Training',
                     title: 'Workout Plan',
                     subtitle: 'Your personalized training program',
@@ -183,8 +179,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     title: 'Diet Plan',
                     subtitle: 'Track your meals and macros',
                     accentColor: const Color(0xFFFFAA00),
-                    onTap: () =>
-                        Navigator.of(context).pushNamed(Routes.diet),
+                    onTap: () => Navigator.of(context).pushNamed(Routes.diet),
                   ),
                 ],
               ),
@@ -271,12 +266,15 @@ class _PlanCard extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: accentColor.withValues(alpha: 0.20),
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
-                            color: accentColor.withValues(alpha: 0.5)),
+                          color: accentColor.withValues(alpha: 0.5),
+                        ),
                       ),
                       child: Text(
                         label,
@@ -320,7 +318,8 @@ class _PlanCard extends StatelessWidget {
                       color: accentColor.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color: accentColor.withValues(alpha: 0.4)),
+                        color: accentColor.withValues(alpha: 0.4),
+                      ),
                     ),
                     child: Icon(
                       Icons.arrow_forward_rounded,

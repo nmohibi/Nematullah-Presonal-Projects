@@ -7,7 +7,6 @@ import 'providers/workout_provider.dart';
 import 'providers/diet_provider.dart';
 import 'screens/about.dart';
 import 'screens/login.dart';
-
 import 'screens/dashboard.dart';
 import 'screens/workout.dart';
 import 'screens/diet.dart';
