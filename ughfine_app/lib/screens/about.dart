@@ -118,7 +118,19 @@ class _AboutScreenState extends State<AboutScreen>
                           const SizedBox(height: 14),
 
                           const Text(
-                            'Your Personal\nFitness Coach.',
+                            'UghFine',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFFFF6B00),
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+
+                          const SizedBox(height: 6),
+
+                          const Text(
+                            'Your AI-Powered Fitness Coach',
                             style: TextStyle(
                               fontSize: 34,
                               fontWeight: FontWeight.bold,
@@ -130,7 +142,7 @@ class _AboutScreenState extends State<AboutScreen>
                           const SizedBox(height: 10),
 
                           const Text(
-                            'Get a personalized workout & diet plan built just for you.',
+                            'Get a personalized workout & diet plan\nbuilt just for you by AI.',
                             style: TextStyle(
                               fontSize: 14,
                               color: Color(0xFF888888),

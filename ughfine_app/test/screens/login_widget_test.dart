@@ -37,15 +37,15 @@ void main() {
       expect(title, findsOneWidget);
     });
 
-    testWidgets('LoginScreen should display Login and Register tabs', (
+    testWidgets('LoginScreen should display Sign In and Register tabs', (
       tester,
     ) async {
       await tester.pumpWidget(app);
 
-      final loginTab = find.text('Login');
+      final signInTab = find.text('Sign In');
       final registerTab = find.text('Register');
 
-      expect(loginTab, findsOneWidget);
+      expect(signInTab, findsOneWidget);
       expect(registerTab, findsOneWidget);
     });
 
