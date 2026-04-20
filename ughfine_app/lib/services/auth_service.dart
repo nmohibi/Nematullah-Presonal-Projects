@@ -1,5 +1,3 @@
-// FlutterFire error handling: https://firebase.flutter.dev/docs/auth/error-handling
-// PlatformException wrapping: https://pub.dev/packages/firebase_auth#handling-errors
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 

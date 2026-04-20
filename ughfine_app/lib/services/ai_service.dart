@@ -1,5 +1,3 @@
-// google_generative_ai usage: https://pub.dev/packages/google_generative_ai
-// Gemini model names: https://ai.google.dev/gemini-api/docs/models
 import 'dart:convert';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import '../config/secrets.dart';

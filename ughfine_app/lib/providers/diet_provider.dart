@@ -1,4 +1,3 @@
-// Immutable list update pattern: https://dart.dev/guides/language/effective-dart/design#prefer-making-fields-and-top-level-variables-final
 import 'package:flutter/material.dart';
 import '../models/diet_model.dart';
 import '../services/firestore_service.dart';
@@ -34,6 +33,8 @@ class DietProvider extends ChangeNotifier {
   }
 
   void selectDay(int index) {
+    if (_dietPlan == null) return;
+    if (index < 0 || index >= _dietPlan!.days.length) return;
     _selectedDayIndex = index;
     notifyListeners();
   }

@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ughfine_app/models/user_model.dart';
 
-//comment for commit
 void main() {
   group('UserModel Tests', () {
     late UserModel user;

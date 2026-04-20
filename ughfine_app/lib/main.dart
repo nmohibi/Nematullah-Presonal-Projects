@@ -1,5 +1,3 @@
-// Route protection with onGenerateRoute: https://docs.flutter.dev/ui/navigation#using-named-routes
-// Provider setup: https://pub.dev/packages/provider#getting-started
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';

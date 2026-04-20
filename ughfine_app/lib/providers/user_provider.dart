@@ -1,5 +1,3 @@
-// ChangeNotifier pattern: https://docs.flutter.dev/data-and-backend/state-mgmt/simple
-// FirebaseAuthException error codes: https://pub.dev/documentation/firebase_auth/latest/firebase_auth/FirebaseAuthException-class.html
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';

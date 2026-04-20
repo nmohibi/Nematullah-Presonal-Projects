@@ -1,5 +1,3 @@
-// Safe dynamic-to-int parsing (_toInt): https://dart.dev/guides/language/type-system#type-inference
-// Firestore data model pattern: https://firebase.flutter.dev/docs/firestore/usage
 class Exercise {
   final String name;
   final int sets;
