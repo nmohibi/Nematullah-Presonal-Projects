@@ -3,7 +3,10 @@ import '../models/diet_model.dart';
 import '../services/firestore_service.dart';
 
 class DietProvider extends ChangeNotifier {
-  final FirestoreService _firestoreService = FirestoreService();
+  final FirestoreService _firestoreService;
+
+  DietProvider({FirestoreService? firestoreService})
+      : _firestoreService = firestoreService ?? FirestoreService();
 
   DietPlan? _dietPlan;
   int _selectedDayIndex = 0;

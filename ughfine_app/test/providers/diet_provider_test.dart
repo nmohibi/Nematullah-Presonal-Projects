@@ -44,7 +44,7 @@ void main() {
         ],
       );
 
-      provider = DietProvider();
+      provider = DietProvider(firestoreService: mockFirestoreService);
     });
 
     test('DietProvider should have null dietPlan on init', () {
